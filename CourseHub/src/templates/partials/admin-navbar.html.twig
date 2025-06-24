@@ -1,0 +1,15 @@
+<aside class="admin-navbar">
+    <div class="logo">
+        <a href="{{ url_for('admin.dashboard') }}">
+            Course Hub
+        </a>
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('admin.dashboard') }}" class="active">Dashboard</a></li>
+        <li><a href="{{ url_for('admin.programmes.list') }}">Programmes</a></li>
+        <li><a href="{{ url_for('admin.modules.list') }}">Modules</a></li>
+        <li><a href="{{ url_for('admin.staff.list') }}">Staff</a></li>
+        <li><a href="{{ url_for('admin.interests.list') }}">Student Interest</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</aside>

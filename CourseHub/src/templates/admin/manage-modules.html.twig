@@ -1,0 +1,162 @@
+{% block head %}
+    <link rel="stylesheet" href="/CourseHub/public/css/admin.css">
+{% endblock %}
+
+{% include 'partials/admin-navbar.html.twig' %}
+
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <h1>Manage Modules</h1>
+    </div>
+
+    {% if programmes %}
+        <!-- Programme Selection -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Select a Programme</h2>
+            </div>
+            <div style="padding: 2rem;">
+                <form method="GET" action="{{ url_for('admin.modules.list') }}" class="program-edit-form">
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="programme-select">Programme</label>
+                            <select id="programme-select" name="programme_id" onchange="this.form.submit()">
+                                <option value="">-- Select a Programme --</option>
+                                {% for programme in programmes %}
+                                    <option value="{{ programme.programmes_id }}" {% if selectedProgramme and selectedProgramme.programmes_id == programme.programmes_id %}selected{% endif %}>
+                                        {{ programme.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if selectedProgramme %}
+            <!-- Add/Edit Module Form -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 id="formTitle">Add New Module</h2>
+                </div>
+                <div style="padding: 2rem;">
+                    <form id="moduleForm" method="POST" action="{{ url_for('admin.modules.add.post') }}" class="program-edit-form">
+                        <input type="hidden" name="{{ csrf.name_key }}" value="{{ csrf.name }}">
+                        <input type="hidden" name="{{ csrf.value_key }}" value="{{ csrf.value }}">
+                        <input type="hidden" name="programme_id" id="programme_id" value="{{ selectedProgramme.programmes_id }}">
+                        <input type="hidden" name="module_id" id="module_id">
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="module_name">Module Name</label>
+                                <input type="text" name="name" id="module_name" placeholder="Enter module name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="module_description">Description</label>
+                                <input type="text" name="description" id="module_description" placeholder="Enter module description (optional)">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="module_year">Year</label>
+                                <input type="number" name="year" id="module_year" placeholder="1-6" required min="1" max="6">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="module_leader_id">Module Leader</label>
+                                <select name="module_leader_id" id="module_leader_id">
+                                    <option value="">Select Module Leader (optional)</option>
+                                    {% for staff in staffList %}
+                                        <option value="{{ staff.staff_id }}">{{ staff.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save" id="formSubmitBtn">Add Module</button>
+                            <button type="button" class="btn btn-cancel" onclick="resetModuleForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modules Table -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Modules for {{ selectedProgramme.name }}</h2>
+                </div>
+
+                {% if modules|length > 0 %}
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Module Details</th>
+                            <th>Year</th>
+                            <th>Module Leader</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for module in modules %}
+                            <tr>
+                                <td>
+                                    <div class="module-name">{{ module.name }}</div>
+                                    <div class="module-code">{{ module.description ?: 'No description provided' }}</div>
+                                </td>
+                                <td><span class="year-badge">Year {{ module.year }}</span></td>
+                                <td>{{ module.module_leader_name ?: '—' }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-edit"
+                                            onclick="editModule({{ module.modules_id }}, '{{ module.name|e('js') }}', '{{ module.description|e('js') }}', {{ module.year }}, {{ module.module_leader_id ?? 'null' }})">
+                                        Edit
+                                    </button>
+                                    <form method="POST" action="{{ url_for('admin.modules.delete', {id: module.modules_id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?')">
+                                        <input type="hidden" name="{{ csrf.name_key }}" value="{{ csrf.name }}">
+                                        <input type="hidden" name="{{ csrf.value_key }}" value="{{ csrf.value }}">
+                                        <button type="submit" class="btn btn-delete">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <p>No modules found for this programme.<br><strong>Add New Module</strong> to get started!</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="welcome-card">
+            <h2>No Programmes Available</h2>
+            <p>You must create programmes before managing modules. Go to the Programmes tab to add your first programme.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    function editModule(id, name, description, year, leaderId) {
+        document.getElementById('formTitle').textContent = 'Edit Module';
+        document.getElementById('module_id').value = id;
+        document.getElementById('module_name').value = name;
+        document.getElementById('module_description').value = description;
+        document.getElementById('module_year').value = year;
+        document.getElementById('module_leader_id').value = leaderId ?? '';
+        const editUrlTemplate = '{{ url_for("admin.modules.edit.post", {"id": "MODULE_ID"}) }}';
+        document.getElementById('moduleForm').action = editUrlTemplate.replace('MODULE_ID', id);
+        document.getElementById('formSubmitBtn').textContent = 'Save Changes';
+    }
+
+    function resetModuleForm() {
+        document.getElementById('formTitle').textContent = 'Add New Module';
+        const form = document.getElementById('moduleForm');
+        form.reset();
+        form.action = '{{ url_for("admin.modules.add.post") }}';
+        document.getElementById('formSubmitBtn').textContent = 'Add Module';
+        document.getElementById('module_id').value = '';
+    }
+</script>

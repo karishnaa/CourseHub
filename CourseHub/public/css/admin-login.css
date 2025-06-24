@@ -1,0 +1,115 @@
+body {
+    background: linear-gradient(135deg, #f0fdfa, #e2e8f0);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    max-width: 460px;
+    width: 100%;
+    box-shadow: 0 40px 80px rgba(13, 148, 136, 0.15);
+}
+
+.login-card h2 {
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"] {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    font-size: 1rem;
+    transition: 0.3s;
+    background-color: #fff;
+}
+
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+}
+
+
+.form-group input[type="checkbox"] {
+    margin-right: 0.5rem;
+    transform: scale(1.1);
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #14b8a6, #0d9488);
+    color: white;
+    padding: 0.9rem;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    transform: scale(1.01);
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.95rem;
+}
+
+.login-footer a {
+    text-decoration: none;
+    color: #0f766e;
+    font-weight: 600;
+    margin: 0 0.75rem;
+}
+.alert.error {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b;
+
+    border: none;
+    padding: 0.85rem 1.25rem;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 1.08rem;
+    margin-bottom: 1.3rem;
+    box-shadow: 0 2px 14px 0 rgba(220, 38, 38, 0.09);
+    transition: opacity 0.5s ease;
+    text-align: center;
+}
+
+
+

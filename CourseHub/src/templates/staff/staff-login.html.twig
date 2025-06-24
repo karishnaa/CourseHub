@@ -1,0 +1,72 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Staff Login{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/CourseHub/public/css/admin-login.css">
+{% endblock %}
+
+{% block body %}
+    <div class="login-container">
+        <div class="login-card">
+            <h2>Staff Login</h2>
+
+            {% if error is defined %}
+                <div class="alert error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('staff.login') }}">
+                <input type="hidden" name="{{ csrf.name_key }}" value="{{ csrf.name }}">
+                <input type="hidden" name="{{ csrf.value_key }}" value="{{ csrf.value }}">
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            placeholder="Enter your email"
+                            value="{{ old_input.email ?? '' }}"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            required
+                            autocomplete="current-password"
+                            placeholder="Enter your password"
+                    >
+                </div>
+
+                <button type="submit" class="btn-submit">Login</button>
+
+                <div class="login-footer">
+                    <a href="{{ url_for('login') }}">Student Login</a> |
+                    <a href="{{ url_for('admin.login') }}">Admin Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const alert = document.querySelector('.alert.error');
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s ease-out';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }, 4000); // 4 seconds before it fades
+            }
+        });
+    </script>
+
+{% endblock %}
+
+

@@ -1,0 +1,36 @@
+{
+  "name": "vendor_name/mkduo",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "karishna",
+      "email": "karishna@gmail.com"
+    }
+  ],
+  "require": {
+    "slim/slim": "^4.14",
+    "nyholm/psr7": "^1.8",
+    "guzzlehttp/psr7": "^2.7",
+    "php-di/php-di": "^7.0",
+    "slim/psr7": "^1.7",
+    "nikic/fast-route": "*",
+    "ralouphie/getallheaders": "^3.0",
+    "symfony/polyfill-php80": "^1.32",
+    "slim/twig-view": "^3.4",
+    "twig/twig": "^3.21",
+    "slim/csrf": "^1.5"
+
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "8.3.20"
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{% block head %}
+    <link rel="stylesheet" href="/CourseHub/public/css/admin.css">
+{% endblock %}
+
+{% block body %}
+    <div class="admin-dashboard">
+        {% include 'partials/admin-navbar.html.twig' %}
+
+        <div class="dashboard-header">
+            <h1>Manage Programs</h1>
+        </div>
+
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>{% if edit_program %}Edit Program{% else %}Add New Program{% endif %}</h2>
+            </div>
+
+            <!-- Remove the extra wrapper div and put form content directly in content-section -->
+            <div style="padding: 2rem;">
+                <form method="POST"
+                      action="{% if edit_program %}{{ url_for('admin.programmes.edit.post', {'id': edit_program.programmes_id}) }}{% else %}{{ url_for('admin.programmes.add.post') }}{% endif %}"
+                      class="program-edit-form">
+                    <input type="hidden" name="{{ csrf.name_key }}" value="{{ csrf.name }}">
+                    <input type="hidden" name="{{ csrf.value_key }}" value="{{ csrf.value }}">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Program Name</label>
+                            <input type="text" id="name" name="name" required placeholder="e.g. Computer Science"
+                                   value="{{ edit_program.name ?? '' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" id="description" name="description" placeholder="Brief description"
+                                   value="{{ edit_program.description ?? '' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="level">Level</label>
+                            <select id="level" name="level" required>
+                                <option value="">Choose level</option>
+                                <option value="undergraduate" {% if edit_program and edit_program.level == 'undergraduate' %}selected{% endif %}>Undergraduate</option>
+                                <option value="postgraduate" {% if edit_program and edit_program.level == 'postgraduate' %}selected{% endif %}>Postgraduate</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image_url">Image URL</label>
+                            <input type="url" id="image_url" name="image_url" placeholder="https://..."
+                                   value="{{ edit_program.image_url ?? '' }}">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        {% if edit_program %}
+                            <button type="submit" class="btn-save">Save Changes</button>
+                            <a href="{{ url_for('admin.programmes.list') }}" class="btn btn-cancel">Cancel</a>
+                        {% else %}
+                            <button type="submit" class="btn-save">Add Program</button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- List of Programs -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Current Programs</h2>
+            </div>
+
+            {% if programs %}
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Level</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for program in programs %}
+                            <tr>
+                                <td>
+                                    {% if program.image_url %}
+                                        <img src="{{ program.image_url }}" alt="Program Image" style="width: 60px; height: auto; border-radius: 8px;">
+                                    {% else %}
+                                        <span>No Image</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ program.name }}</td>
+                                <td>{{ program.description|default('No description') }}</td>
+                                <td><span class="year-badge">{{ program.level|capitalize }}</span></td>
+                                <td>
+                                    <a href="{{ url_for('admin.programmes.list') }}?edit={{ program.programmes_id }}" class="btn btn-edit">Edit</a>
+
+                                    <form method="POST" action="{{ url_for('admin.programmes.delete', {'id': program.programmes_id}) }}" style="display: inline;">
+                                        <input type="hidden" name="{{ csrf.name_key }}" value="{{ csrf.name }}">
+                                        <input type="hidden" name="{{ csrf.value_key }}" value="{{ csrf.value }}">
+                                        <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                                    </form>
+
+                                    <form method="POST" action="{{ url_for('admin.programmes.publish', { 'id': program.programmes_id }) }}" style="display: inline;">
+                                        <input type="hidden" name="{{ csrf.name_key }}" value="{{ csrf.name }}">
+                                        <input type="hidden" name="{{ csrf.value_key }}" value="{{ csrf.value }}">
+                                        <input type="hidden" name="action_type" value="{{ program.published ? 'unpublish' : 'publish' }}">
+                                        <button class="btn btn-publish">{{ program.published ? 'Unpublish' : 'Publish' }}</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No programs yet. Go ahead and create one up there ⬆️</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+

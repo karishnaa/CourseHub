@@ -1,0 +1,64 @@
+<?php
+global $conn;
+include('../../config/db_connection.php');
+
+try {
+    $stmt = $conn->prepare("SELECT * FROM users");
+    $stmt->execute();
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users - Admin</title>
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul>
+            <li><a href="admin-dashboard.html.twig">Dashboard</a></li>
+            <li><a href="manage-programs.html.twig">Manage Programs</a></li>
+            <li><a href="student-interests.html.twig" class="active">View Student Interest</a></li>
+            <li><a href="manage-users.php">User Management</a></li>
+            <li><a href="../controllers/LogoutController">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <h1>Manage Users</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Date Registered</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($users as $user): ?>
+            <tr>
+                <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
+                <td><?= htmlspecialchars($user['role'] ?? '') ?></td>
+                <td><?= htmlspecialchars($user['created_at'] ?? '') ?></td>
+                <td>
+                    <a href="edit_user.html.twig?id=<?= $user['id'] ?>">Edit</a> |
+                    <a href="delete_user.html.twig?id=<?= $user['id'] ?>" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

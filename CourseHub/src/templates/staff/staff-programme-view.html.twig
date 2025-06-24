@@ -1,0 +1,59 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}View Programme - CourseHub Staff Panel{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/CourseHub/public/css/staff.css">
+{% endblock %}
+
+{% block body %}
+    {% include 'partials/staff-navbar.html.twig' %}
+
+    <div class="staff-dashboard">
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Programme: {{ programme.name }}</h2>
+            </div>
+            <div class="programme-details">
+                <span class="year-badge">
+                    {{ programme.level|capitalize }} Level
+                </span>
+                <p class="programme-description">{{ programme.description }}</p>
+
+                <div class="section-header sub-header">
+                    <h3>Modules</h3>
+                </div>
+                {% if modules %}
+                    {% set current_year = null %}
+                    {% for module in modules|sort((a, b) => a.year <=> b.year) %}
+                        {% if current_year != module.year %}
+                            {% if not loop.first %}
+                                </ul>
+                            {% endif %}
+                            <h4 style="margin-top: 2rem; margin-bottom: 1rem;">
+                                Year {{ module.year }}
+                            </h4>
+                            <ul class="programme-module-list" style="margin-bottom: 0;">
+                            {% set current_year = module.year %}
+                        {% endif %}
+                        <li class="module-card">
+                            <div class="module-title-row">
+                                <span class="module-title">{{ module.name }}</span>
+                            </div>
+                            <div class="module-desc">{{ module.description }}</div>
+                        </li>
+                        {% if loop.last %}
+                            </ul>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No modules available for this programme.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+

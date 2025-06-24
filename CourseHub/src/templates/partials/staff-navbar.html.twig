@@ -1,0 +1,31 @@
+<nav class="staff-navbar">
+    <div class="logo">
+        <a href="{{ url_for('staff.dashboard') }}">
+            <i class="fas fa-user-cog"></i> Staff Dashboard -
+            CourseHub
+        </a>
+    </div>
+
+    <ul class="nav-links">
+        <li>
+            <a href="{{ url_for('staff.dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('staff.profile.edit') }}">
+                <i class="fas fa-user-edit"></i> Edit Profile
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
+    </ul>
+</nav>
+
+
+
+
+

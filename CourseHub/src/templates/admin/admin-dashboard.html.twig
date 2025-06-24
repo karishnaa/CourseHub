@@ -1,0 +1,135 @@
+{% extends 'layout.html.twig' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/CourseHub/public/css/admin.css">
+{% endblock %}
+
+{% block body %}
+    {% include 'partials/admin-navbar.html.twig' %}
+
+    <div class="admin-dashboard">
+        <div class="dashboard-header">
+            <h1>Admin Dashboard</h1>
+            {% if adminId %}
+                <p class="welcome-admin">Welcome back, Admin #{{ adminId }}</p>
+            {% endif %}
+        </div>
+
+
+        <div class="quick-access">
+            <a href="{{ url_for('admin.programmes.list') }}" class="quick-card">
+                <h3>Programmes</h3>
+                <p>Browse all academic programmes</p>
+            </a>
+            <a href="{{ url_for('admin.modules.list') }}" class="quick-card">
+                <h3>Modules</h3>
+                <p>Manage module offerings</p>
+            </a>
+            <a href="{{ url_for('admin.staff.list') }}" class="quick-card">
+                <h3>Staff</h3>
+                <p>Administer staff profiles</p>
+            </a>
+            <a href="{{ url_for('admin.interests.list') }}" class="quick-card">
+                <h3>Student Interests</h3>
+                <p>View student-submitted interests</p>
+            </a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Students</span>
+                </div>
+                <div class="stat-value">{{ totalStudents }}</div>
+                <div class="stat-description">Enrolled across all programs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Programmes</span>
+                </div>
+                <div class="stat-value">{{ totalPrograms }}</div>
+                <div class="stat-description">Available study tracks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Interests</span>
+                </div>
+                <div class="stat-value">{{ totalInterests }}</div>
+                <div class="stat-description">Student-submitted preferences</div>
+            </div>
+        </div>
+
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>Student Interests</h2>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Programme</th>
+                    <th>Interested Students</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for stat in stats %}
+                    <tr>
+                        <td>{{ stat.program_name }}</td>
+                        <td>{{ stat.total }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">No data available.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/CourseHub/public/js/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const stats = {{ stats|json_encode|raw }};
+            console.log("Stats data:", stats);
+
+            if (!Array.isArray(stats) || stats.length === 0) {
+                document.getElementById('programmeChart').parentElement.innerHTML = "<p style='padding: 1rem;'>No chart data available.</p>";
+                return;
+            }
+
+            const ctx = document.getElementById('programmeChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: stats.map(s => s.program_name.trim()),
+                    datasets: [{
+                        label: 'Interested Students',
+                        data: stats.map(s => s.total),
+                        backgroundColor: '#14b8a6'
+                    }]
+
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+
+
